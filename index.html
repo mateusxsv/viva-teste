@@ -1,0 +1,2534 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vivamais - Plataforma de Agendamentos</title>
+    <link rel="icon" type"image/x-icon" href="favicon.ico">
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background-color:rgb(0, 11, 170);
+        color: #111827;
+      }
+
+      .header {
+        background: white;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 0 24px;
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+      }
+
+      .logo {
+        font-size: 24px;
+        font-weight: bold;
+        color: #2563eb;
+      }
+
+      .header-right {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .menu-toggle {
+        display: none;
+        background: #2563eb;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        color: white;
+        padding: 10px;
+        min-height: 44px;
+        min-width: 44px;
+        border-radius: 6px;
+        touch-action: manipulation;
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        z-index: 1001;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+        animation: menuPulse 2s infinite;
+      }
+
+      .back-button {
+        display: none;
+        background: #059669;
+        border: none;
+        font-size: 18px;
+        cursor: pointer;
+        color: white;
+        padding: 10px;
+        min-height: 44px;
+        min-width: 44px;
+        border-radius: 6px;
+        touch-action: manipulation;
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        z-index: 1001;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+      }
+
+      .back-button:active {
+        transform: scale(0.95);
+      }
+
+      .menu-toggle:active {
+        transform: scale(0.95);
+      }
+
+      @keyframes menuPulse {
+        0%,
+        100% {
+          box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+        }
+        50% {
+          box-shadow: 0 2px 12px rgba(37, 99, 235, 0.6);
+        }
+      }
+
+      .avatar {
+        width: 32px;
+        height: 32px;
+        background: #2563eb;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .sidebar {
+        width: 256px;
+        background: rgba(0, 3, 51, 0.62);
+        border-right: 1px rgb(76, 213, 255);
+        padding: 24px 16px;
+        position: fixed;
+        left: 0;
+        top: 64px;
+        bottom: 0;
+        overflow-y: auto;
+      }
+
+      .nav-button {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        margin-bottom: 8px;
+        background: none;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        color:rgb(255, 255, 255);
+        transition: all 0.2s;
+        text-align: left;
+      }
+
+      .nav-button:hover {
+        background:rgb(0, 107, 194);
+      }
+
+      .nav-button.active {
+        background: #dbeafe;
+        color: #1d4ed8;
+      }
+
+      .main-content {
+        margin-left: 256px;
+        margin-top: 64px;
+        padding: 32px;
+        flex: 1;
+      }
+
+      .content-section {
+        display: none;
+      }
+
+      .content-section.active {
+        display: block;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 24px;
+        margin-bottom: 32px;
+      }
+
+      .stat-card {
+        background: white;
+        padding: 24px;
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .stat-value {
+        font-size: 30px;
+        font-weight: bold;
+        margin-top: 8px;
+      }
+
+      .stat-label {
+        font-size: 14px;
+        font-weight: 500;
+        color: #6b7280;
+      }
+
+      .green {
+        color: #059669;
+      }
+      .blue {
+        color: #2563eb;
+      }
+      .red {
+        color: #dc2626;
+      }
+      .yellow {
+        color: #d97706;
+      }
+
+      .table-container {
+        background: rgb(255, 255, 255);
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+        overflow: hidden;
+        margin-bottom: 24px;
+      }
+
+      .table-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 24px;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .table-title {
+        font-size: 20px;
+        font-weight: bold;
+      }
+
+      .btn {
+        background: #2563eb;
+        color: white;
+        border: none;
+        padding: 10px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: background 0.2s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+      }
+
+      .btn:hover {
+        background: #1d4ed8;
+      }
+
+      .btn-sm {
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+
+      .btn-green {
+        background: #059669;
+      }
+
+      .btn-green:hover {
+        background: #047857;
+      }
+
+      .btn-orange {
+        background: #d97706;
+      }
+
+      .btn-orange:hover {
+        background: #b45309;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th {
+        background: #f9fafb;
+        padding: 12px 24px;
+        text-align: left;
+        font-size: 12px;
+        font-weight: 500;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      td {
+        padding: 16px 24px;
+        border-bottom: 1px solid #e5e7eb;
+        font-size: 14px;
+      }
+
+      tr:hover {
+        background: #f9fafb;
+      }
+
+      .badge {
+        display: inline-flex;
+        padding: 4px 8px;
+        font-size: 12px;
+        font-weight: 600;
+        border-radius: 20px;
+      }
+
+      .badge-green {
+        background: #d1fae5;
+        color: #065f46;
+      }
+
+      .badge-red {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      .badge-yellow {
+        background: #fef3c7;
+        color: #92400e;
+      }
+
+      .badge-blue {
+        background: #dbeafe;
+        color: #1e40af;
+      }
+
+      .risk-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 24px;
+        margin-bottom: 32px;
+      }
+
+      .risk-card {
+        background: white;
+        padding: 24px;
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+      }
+
+      .risk-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px;
+        border-radius: 6px;
+        margin-bottom: 12px;
+      }
+
+      .risk-high {
+        background: #fee2e2;
+      }
+      .risk-medium {
+        background: #fef3c7;
+      }
+      .risk-low {
+        background: #d1fae5;
+      }
+
+      .waiting-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        transition: background 0.2s;
+      }
+
+      .waiting-item:hover {
+        background: #f9fafb;
+      }
+
+      .patient-info h4 {
+        font-weight: 500;
+        margin-bottom: 4px;
+      }
+
+      .patient-info .phone {
+        font-size: 14px;
+        color: #6b7280;
+      }
+
+      .patient-info .specialty {
+        font-size: 14px;
+        color: #2563eb;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 8px;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 48px;
+        color: #6b7280;
+      }
+
+      .progress-item {
+        margin-bottom: 16px;
+      }
+
+      .progress-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 4px;
+        font-size: 14px;
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: #e5e7eb;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        border-radius: 4px;
+        transition: width 0.3s ease;
+      }
+
+      .form-container {
+        background: #f8fafc;
+        border: 2px dashed #cbd5e1;
+        border-radius: 8px;
+      }
+
+      .form-container input,
+      .form-container select {
+        transition: border-color 0.2s;
+      }
+
+      .form-container input:focus,
+      .form-container select:focus {
+        outline: none;
+        border-color: #2563eb;
+      }
+
+      .cultural-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        border: 1px solid #e5e7eb;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .cultural-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+
+      .benefit-card {
+        background: linear-gradient(135deg, #fef7ff 0%, #f3e8ff 100%);
+        border-radius: 12px;
+        padding: 20px;
+        border: 2px solid #e879f9;
+        transition: transform 0.2s;
+      }
+
+      .benefit-card:hover {
+        transform: scale(1.02);
+      }
+
+      .gradient-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+
+      .mobile-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+      }
+
+      .mobile-overlay.active {
+        display: block;
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          transform: translateX(-100%);
+          transition: transform 0.3s ease-in-out;
+        }
+        .sidebar.mobile-open {
+          transform: translateX(0);
+        }
+        .main-content {
+          margin-left: 0;
+        }
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+        .form-container div {
+          grid-template-columns: 1fr !important;
+        }
+        .header {
+          display: none;
+        }
+        .menu-toggle,
+        .back-button {
+          display: block;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <button class="menu-toggle" id="menuToggle" onclick="toggleMobileMenu()">
+      ☰
+    </button>
+    <button
+      class="back-button"
+      id="backButton"
+      onclick="goToHome();"
+      title="Voltar ao Dashboard"
+    >
+      🏠
+    </button>
+
+    <header class="header">
+      <div class="logo">VivaMais</div>
+      <div class="header-right">
+        <div class="avatar">CS</div>
+      </div>
+    </header>
+
+    <div
+      class="mobile-overlay"
+      id="mobileOverlay"
+      onclick="closeMobileMenu()"
+    ></div>
+
+    <nav class="sidebar" id="sidebar">
+      <button
+        class="nav-button active"
+        onclick="showSection('dashboard', this)"
+      >
+        📊 Dashboard
+      </button>
+      <button class="nav-button" onclick="showSection('appointments', this)">
+        📅 Agendamentos
+      </button>
+      <button class="nav-button" onclick="showSection('waiting', this)">
+        👥 Lista de Espera
+      </button>
+      <button class="nav-button" onclick="showSection('analytics', this)">
+        📈 Análise e Relatórios
+      </button>
+      <button class="nav-button" onclick="showSection('bonifications', this)">
+        🎁 Bonificações & Cultura
+      </button>
+    </nav>
+
+    <main class="main-content">
+      <section id="dashboard" class="content-section active">
+        <div
+          id="mobileInstruction"
+          style="
+            display: none;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            text-align: center;
+          "
+        >
+          <div style="font-size: 18px; margin-bottom: 8px">
+            📱 Bem-vindo ao ConfirmAí!
+          </div>
+          <div style="font-size: 14px; margin-bottom: 8px">
+            Toque no botão <strong>☰</strong> para navegar entre as seções
+          </div>
+          <div style="font-size: 14px">
+            Toque no botão <strong>🏠</strong> para voltar ao início
+          </div>
+        </div>
+
+        <div
+          id="mobileQuickNav"
+          style="
+            display: none;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 24px;
+            overflow-x: auto;
+          "
+        >
+          <div style="display: flex; gap: 8px; min-width: max-content">
+            <button
+              id="quickDash"
+              onclick="showSection('dashboard', this)"
+              class="btn btn-sm"
+              style="background: #2563eb"
+            >
+              📊 Dashboard
+            </button>
+            <button
+              id="quickAppts"
+              onclick="showSection('appointments', this)"
+              class="btn btn-sm"
+              style="background: #6b7280"
+            >
+              📅 Agendamentos
+            </button>
+            <button
+              id="quickWait"
+              onclick="showSection('waiting', this)"
+              class="btn btn-sm"
+              style="background: #6b7280"
+            >
+              👥 Lista Espera
+            </button>
+            <button
+              id="quickBonif"
+              onclick="showSection('bonifications', this)"
+              class="btn btn-sm"
+              style="background: #6b7280"
+            >
+              🎁 Bonificações
+            </button>
+            <button
+              id="quickAnalyt"
+              onclick="showSection('analytics', this)"
+              class="btn btn-sm"
+              style="background: #6b7280"
+            >
+              📈 Relatórios
+            </button>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div>
+              <div class="stat-label">Consultas Hoje</div>
+              <div class="stat-value">24</div>
+            </div>
+            <div style="font-size: 32px">📅</div>
+          </div>
+          <div class="stat-card">
+            <div>
+              <div class="stat-label">Taxa de Confirmação</div>
+              <div class="stat-value green">85%</div>
+            </div>
+            <div style="font-size: 32px">✅</div>
+          </div>
+          <div class="stat-card">
+            <div>
+              <div class="stat-label">No-Show Evitados</div>
+              <div class="stat-value blue">8</div>
+            </div>
+            <div style="font-size: 32px">📈</div>
+          </div>
+        </div>
+
+        <div class="risk-grid">
+          <div class="risk-card">
+            <h3 style="margin-bottom: 16px; font-size: 18px">
+              Análise Preditiva - Hoje
+            </h3>
+            <div class="risk-item risk-high">
+              <span style="font-weight: 500">Alto Risco de Falta</span>
+              <span class="red" style="font-weight: bold">3 pacientes</span>
+            </div>
+            <div class="risk-item risk-medium">
+              <span style="font-weight: 500">Médio Risco</span>
+              <span class="yellow" style="font-weight: bold">5 pacientes</span>
+            </div>
+            <div class="risk-item risk-low">
+              <span style="font-weight: 500">Baixo Risco</span>
+              <span class="green" style="font-weight: bold">16 pacientes</span>
+            </div>
+          </div>
+
+          <div class="risk-card">
+            <h3 style="margin-bottom: 16px; font-size: 18px">
+              Receita Protegida
+            </h3>
+            <div style="text-align: center">
+              <div
+                style="
+                  font-size: 30px;
+                  font-weight: bold;
+                  color: #059669;
+                  margin-bottom: 8px;
+                "
+              >
+                R$ 12.500
+              </div>
+              <p style="font-size: 14px; color: #6b7280; margin-bottom: 16px">
+                Economia este mês com redução de no-shows
+              </p>
+              <div
+                style="background: #d1fae5; padding: 12px; border-radius: 6px"
+              >
+                <p style="font-size: 14px; color: #065f46">
+                  📈 +23% comparado ao mês anterior
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="appointments" class="content-section">
+        <div
+          id="newAppointmentForm"
+          class="table-container form-container"
+          style="display: none; margin-bottom: 24px"
+        >
+          <div class="table-header">
+            <h3 class="table-title">➕ Novo Agendamento</h3>
+            <button class="btn btn-orange" onclick="closeNewAppointmentForm()">
+              ❌ Cancelar
+            </button>
+          </div>
+          <div style="padding: 24px">
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 16px;
+                margin-bottom: 16px;
+              "
+            >
+              <div>
+                <label
+                  style="display: block; margin-bottom: 4px; font-weight: 500"
+                  >Nome do Paciente:</label
+                >
+                <input
+                  type="text"
+                  id="newPatientName"
+                  style="
+                    width: 100%;
+                    padding: 8px;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 4px;
+                  "
+                />
+              </div>
+              <div>
+                <label
+                  style="display: block; margin-bottom: 4px; font-weight: 500"
+                  >Telefone:</label
+                >
+                <input
+                  type="text"
+                  id="newPatientPhone"
+                  placeholder="(11) 99999-9999"
+                  style="
+                    width: 100%;
+                    padding: 8px;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 4px;
+                  "
+                />
+              </div>
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 16px;
+                margin-bottom: 16px;
+              "
+            >
+              <div>
+                <label
+                  style="display: block; margin-bottom: 4px; font-weight: 500"
+                  >Horário:</label
+                >
+                <input
+                  type="time"
+                  id="newAppointmentTime"
+                  style="
+                    width: 100%;
+                    padding: 8px;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 4px;
+                  "
+                />
+              </div>
+              <div>
+                <label
+                  style="display: block; margin-bottom: 4px; font-weight: 500"
+                  >Especialidade:</label
+                >
+                <select
+                  id="newAppointmentSpecialty"
+                  style="
+                    width: 100%;
+                    padding: 8px;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 4px;
+                  "
+                >
+                  <option value="Cardiologia">Cardiologia</option>
+                  <option value="Dermatologia">Dermatologia</option>
+                  <option value="Ortopedia">Ortopedia</option>
+                  <option value="Pediatria">Pediatria</option>
+                  <option value="Ginecologia">Ginecologia</option>
+                </select>
+              </div>
+              <div>
+                <label
+                  style="display: block; margin-bottom: 4px; font-weight: 500"
+                  >Risco Previsto:</label
+                >
+                <select
+                  id="newAppointmentRisk"
+                  style="
+                    width: 100%;
+                    padding: 8px;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 4px;
+                  "
+                >
+                  <option value="low">Baixo</option>
+                  <option value="medium">Médio</option>
+                  <option value="high">Alto</option>
+                </select>
+              </div>
+            </div>
+            <button
+              class="btn btn-green"
+              onclick="saveNewAppointment()"
+              style="margin-right: 8px"
+            >
+              ✅ Salvar Agendamento
+            </button>
+            <button class="btn" onclick="closeNewAppointmentForm()">
+              ❌ Cancelar
+            </button>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <div class="table-header">
+            <h2 class="table-title">Agendamentos - Hoje</h2>
+            <button class="btn" onclick="openNewAppointmentForm()">
+              ➕ Novo Agendamento
+            </button>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Paciente</th>
+                <th>Horário</th>
+                <th>Especialidade</th>
+                <th>Status</th>
+                <th>Risco</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="appointmentsBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="bonifications" class="content-section">
+        <div style="margin-bottom: 32px">
+          <h2
+            style="
+              font-size: 28px;
+              font-weight: bold;
+              margin-bottom: 8px;
+              color:rgb(136, 217, 255);
+            "
+          >
+            🎁 Programa de Bonificações Viva+
+          </h2>
+          <p style="font-size: 16px; color:rgb(255, 255, 255); margin-bottom: 24px">
+            Parcerias com a Prefeitura de Recife - Incentive seus pacientes com
+            cultura e lazer!
+          </p>
+
+          <div class="stats-grid">
+            <div
+              class="stat-card"
+              style="
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+              "
+            >
+              <div>
+                <div class="stat-label" style="color: #e0e7ff">
+                  Pacientes Engajados
+                </div>
+                <div class="stat-value" style="color: white">156</div>
+              </div>
+              <div style="font-size: 32px">🏆</div>
+            </div>
+            <div
+              class="stat-card"
+              style="
+                background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+                color: white;
+              "
+            >
+              <div>
+                <div class="stat-label" style="color: #fce7f3">
+                  Benefícios Resgatados
+                </div>
+                <div class="stat-value" style="color: white">89</div>
+              </div>
+              <div style="font-size: 32px">🎪</div>
+            </div>
+            <div
+              class="stat-card"
+              style="
+                background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+                color: white;
+              "
+            >
+              <div>
+                <div class="stat-label" style="color: #e0f2fe">
+                  Taxa de Confirmação
+                </div>
+                <div class="stat-value" style="color: white">+34%</div>
+              </div>
+              <div style="font-size: 32px">📈</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-container" style="margin-bottom: 32px">
+          <div
+            class="table-header"
+            style="
+              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+              color: white;
+            "
+          >
+            <h3 class="table-title" style="color: white">
+              ⭐ Sistema de Pontos Viva+
+            </h3>
+            <button
+              class="btn"
+              style="background: white; color: #667eea"
+              onclick="showPointsDetails()"
+            >
+              📊 Ver Detalhes
+            </button>
+          </div>
+          <div style="padding: 24px; background: #f8fafc">
+            <div
+              style="
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 16px;
+              "
+            >
+              <div
+                style="
+                  text-align: center;
+                  padding: 20px;
+                  background: white;
+                  border-radius: 12px;
+                  border: 2px solid #e0e7ff;
+                "
+              >
+                <div style="font-size: 24px; margin-bottom: 8px">✅</div>
+                <h4 style="font-weight: 600; margin-bottom: 4px">
+                  Confirmação de Consulta
+                </h4>
+                <p style="color: #059669; font-weight: bold">+10 pontos</p>
+              </div>
+              <div
+                style="
+                  text-align: center;
+                  padding: 20px;
+                  background: white;
+                  border-radius: 12px;
+                  border: 2px solid #fef3c7;
+                "
+              >
+                <div style="font-size: 24px; margin-bottom: 8px">⏰</div>
+                <h4 style="font-weight: 600; margin-bottom: 4px">
+                  Pontualidade
+                </h4>
+                <p style="color: #d97706; font-weight: bold">+5 pontos</p>
+              </div>
+              <div
+                style="
+                  text-align: center;
+                  padding: 20px;
+                  background: white;
+                  border-radius: 12px;
+                  border: 2px solid #fce7f3;
+                "
+              >
+                <div style="font-size: 24px; margin-bottom: 8px">📅</div>
+                <h4 style="font-weight: 600; margin-bottom: 4px">
+                  Consulta Realizada
+                </h4>
+                <p style="color: #be185d; font-weight: bold">+15 pontos</p>
+              </div>
+              <div
+                style="
+                  text-align: center;
+                  padding: 20px;
+                  background: white;
+                  border-radius: 12px;
+                  border: 2px solid #dcfdf7;
+                "
+              >
+                <div style="font-size: 24px; margin-bottom: 8px">👨‍👩‍👧‍👦</div>
+                <h4 style="font-weight: 600; margin-bottom: 4px">
+                  Indicação de Amigo
+                </h4>
+                <p style="color: #059669; font-weight: bold">+25 pontos</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-container" style="margin-bottom: 32px">
+          <div
+            class="table-header"
+            style="
+              background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+              color: white;
+            "
+          >
+            <h3 class="table-title" style="color: white">
+              🏛️ Parceria Prefeitura de Recife - Projetos Culturais
+            </h3>
+            <button
+              class="btn"
+              style="background: white; color: #4facfe"
+              onclick="refreshCulturalProjects()"
+            >
+              🔄 Atualizar
+            </button>
+          </div>
+          <div style="padding: 24px">
+            <div
+              id="culturalProjectsContainer"
+              style="
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+                gap: 20px;
+              "
+            ></div>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <div
+            class="table-header"
+            style="
+              background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+              color: white;
+            "
+          >
+            <h3 class="table-title" style="color: white">
+              🎪 Benefícios Disponíveis para Resgate
+            </h3>
+            <button
+              class="btn"
+              style="background: white; color: #f093fb"
+              onclick="openBenefitsManager()"
+            >
+              ⚙️ Gerenciar
+            </button>
+          </div>
+          <div style="padding: 24px">
+            <div
+              id="benefitsContainer"
+              style="
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 20px;
+              "
+            ></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="waiting" class="content-section">
+        <div
+          id="newWaitingForm"
+          class="table-container form-container"
+          style="display: none; margin-bottom: 24px"
+        >
+          <div class="table-header">
+            <h3 class="table-title">➕ Adicionar à Lista de Espera</h3>
+            <button class="btn btn-orange" onclick="closeNewWaitingForm()">
+              ❌ Cancelar
+            </button>
+          </div>
+          <div style="padding: 24px">
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 16px;
+                margin-bottom: 16px;
+              "
+            >
+              <div>
+                <label
+                  style="display: block; margin-bottom: 4px; font-weight: 500"
+                  >Nome do Paciente:</label
+                >
+                <input
+                  type="text"
+                  id="newWaitingName"
+                  style="
+                    width: 100%;
+                    padding: 8px;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 4px;
+                  "
+                />
+              </div>
+              <div>
+                <label
+                  style="display: block; margin-bottom: 4px; font-weight: 500"
+                  >Telefone:</label
+                >
+                <input
+                  type="text"
+                  id="newWaitingPhone"
+                  placeholder="(11) 99999-9999"
+                  style="
+                    width: 100%;
+                    padding: 8px;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 4px;
+                  "
+                />
+              </div>
+              <div>
+                <label
+                  style="display: block; margin-bottom: 4px; font-weight: 500"
+                  >Especialidade:</label
+                >
+                <select
+                  id="newWaitingSpecialty"
+                  style="
+                    width: 100%;
+                    padding: 8px;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 4px;
+                  "
+                >
+                  <option value="Cardiologia">Cardiologia</option>
+                  <option value="Dermatologia">Dermatologia</option>
+                  <option value="Ortopedia">Ortopedia</option>
+                  <option value="Pediatria">Pediatria</option>
+                  <option value="Ginecologia">Ginecologia</option>
+                </select>
+              </div>
+            </div>
+            <button
+              class="btn btn-green"
+              onclick="saveNewWaitingPatient()"
+              style="margin-right: 8px"
+            >
+              ✅ Adicionar à Lista
+            </button>
+            <button class="btn" onclick="closeNewWaitingForm()">
+              ❌ Cancelar
+            </button>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <div class="table-header">
+            <h2 class="table-title">Lista de Espera Inteligente</h2>
+            <button class="btn" onclick="openNewWaitingForm()">
+              ➕ Adicionar à Lista
+            </button>
+          </div>
+          <div style="padding: 24px">
+            <h3 style="font-size: 18px; margin-bottom: 16px">
+              Pacientes Aguardando
+            </h3>
+            <div id="waitingListContainer"></div>
+          </div>
+        </div>
+
+        <div class="risk-card" style="margin-top: 24px">
+          <h3 style="font-size: 18px; margin-bottom: 16px">
+            Funcionamento da Lista Inteligente
+          </h3>
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+              gap: 16px;
+            "
+          >
+            <div
+              style="
+                text-align: center;
+                padding: 16px;
+                background: #dbeafe;
+                border-radius: 8px;
+              "
+            >
+              <div style="font-size: 32px; margin-bottom: 8px">🔍</div>
+              <h4 style="font-weight: 500; margin-bottom: 8px">
+                1. Detecção Automática
+              </h4>
+              <p style="font-size: 14px; color: #6b7280">
+                Sistema identifica não confirmações e cancelamentos
+              </p>
+            </div>
+            <div
+              style="
+                text-align: center;
+                padding: 16px;
+                background: #d1fae5;
+                border-radius: 8px;
+              "
+            >
+              <div style="font-size: 32px; margin-bottom: 8px">📱</div>
+              <h4 style="font-weight: 500; margin-bottom: 8px">
+                2. Notificação Inteligente
+              </h4>
+              <p style="font-size: 14px; color: #6b7280">
+                Pacientes ideais são notificados automaticamente
+              </p>
+            </div>
+            <div
+              style="
+                text-align: center;
+                padding: 16px;
+                background: #ede9fe;
+                border-radius: 8px;
+              "
+            >
+              <div style="font-size: 32px; margin-bottom: 8px">⚡</div>
+              <h4 style="font-weight: 500; margin-bottom: 8px">
+                3. Preenchimento Rápido
+              </h4>
+              <p style="font-size: 14px; color: #6b7280">
+                Vagas são preenchidas em minutos, não horas
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="analytics" class="content-section">
+        <h2 style="margin-bottom: 32px; font-size: 24px; font-weight: bold">
+          📊 Análise e Relatórios
+        </h2>
+
+        <div class="risk-grid">
+          <div class="risk-card">
+            <h3 style="font-size: 18px; margin-bottom: 16px">
+              Performance Semanal
+            </h3>
+            <div class="progress-item">
+              <div class="progress-header">
+                <span>Taxa de Confirmação</span>
+                <span>85%</span>
+              </div>
+              <div class="progress-bar">
+                <div
+                  class="progress-fill"
+                  style="width: 85%; background: #059669"
+                ></div>
+              </div>
+            </div>
+            <div class="progress-item">
+              <div class="progress-header">
+                <span>Redução de No-Show</span>
+                <span>73%</span>
+              </div>
+              <div class="progress-bar">
+                <div
+                  class="progress-fill"
+                  style="width: 73%; background: #2563eb"
+                ></div>
+              </div>
+            </div>
+            <div class="progress-item">
+              <div class="progress-header">
+                <span>Preenchimento da Lista de Espera</span>
+                <span>92%</span>
+              </div>
+              <div class="progress-bar">
+                <div
+                  class="progress-fill"
+                  style="width: 92%; background: #7c3aed"
+                ></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="risk-card">
+            <h3 style="font-size: 18px; margin-bottom: 16px">
+              💰 Impacto Financeiro
+            </h3>
+            <div class="risk-item risk-low">
+              <span style="font-weight: 500">Receita Recuperada</span>
+              <span class="green" style="font-weight: bold">R$ 12.500</span>
+            </div>
+            <div class="risk-item" style="background: #dbeafe">
+              <span style="font-weight: 500">Economia Operacional</span>
+              <span class="blue" style="font-weight: bold">R$ 3.200</span>
+            </div>
+            <div class="risk-item" style="background: #ede9fe">
+              <span style="font-weight: 500">ROI da Plataforma</span>
+              <span style="color: #7c3aed; font-weight: bold">320%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <div class="table-header">
+            <h3 class="table-title">📈 Histórico de Confirmações</h3>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Total Enviadas</th>
+                <th>WhatsApp</th>
+                <th>SMS</th>
+                <th>Taxa de Resposta</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>20/08/2025</td>
+                <td>28</td>
+                <td>22</td>
+                <td>6</td>
+                <td><span class="badge badge-green">89%</span></td>
+              </tr>
+              <tr>
+                <td>19/08/2025</td>
+                <td>31</td>
+                <td>25</td>
+                <td>6</td>
+                <td><span class="badge badge-green">83%</span></td>
+              </tr>
+              <tr>
+                <td>18/08/2025</td>
+                <td>26</td>
+                <td>20</td>
+                <td>6</td>
+                <td><span class="badge badge-green">91%</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      // Dados dos agendamentos
+      var appointments = [
+        {
+          id: 1,
+          patient: "Maria Silva",
+          phone: "(11) 99999-1234",
+          time: "09:00",
+          status: "confirmed",
+          riskLevel: "low",
+          specialty: "Cardiologia",
+        },
+        {
+          id: 2,
+          patient: "João Santos",
+          phone: "(11) 99999-5678",
+          time: "10:30",
+          status: "pending",
+          riskLevel: "high",
+          specialty: "Dermatologia",
+        },
+        {
+          id: 3,
+          patient: "Ana Costa",
+          phone: "(11) 99999-9012",
+          time: "14:00",
+          status: "not_confirmed",
+          riskLevel: "medium",
+          specialty: "Ortopedia",
+        },
+        {
+          id: 4,
+          patient: "Carlos Lima",
+          phone: "(11) 99999-3456",
+          time: "15:30",
+          status: "confirmed",
+          riskLevel: "low",
+          specialty: "Cardiologia",
+        },
+      ];
+
+      // Lista de espera
+      var waitingList = [
+        {
+          id: 1,
+          patient: "Pedro Oliveira",
+          phone: "(11) 99999-7890",
+          specialty: "Cardiologia",
+        },
+        {
+          id: 2,
+          patient: "Lucia Ferreira",
+          phone: "(11) 99999-2468",
+          specialty: "Dermatologia",
+        },
+        {
+          id: 3,
+          patient: "Roberto Alves",
+          phone: "(11) 99999-1357",
+          specialty: "Ortopedia",
+        },
+      ];
+
+      // Projetos Culturais da Prefeitura de Recife
+      var culturalProjects = [
+        {
+          id: 1,
+          title: "Festival de Inverno de Bonito",
+          description:
+            "Festival de música e arte com shows gratuitos no Parque da Jaqueira",
+          category: "Música",
+          date: "15-30 Agosto 2025",
+          location: "Parque da Jaqueira",
+          points: 50,
+          image: "🎵",
+          status: "Disponível",
+        },
+        {
+          id: 2,
+          title: "Circuito Cultural Marco Zero",
+          description:
+            "Exposições de arte e cultura pernambucana no centro histórico",
+          category: "Arte",
+          date: "Todo mês",
+          location: "Marco Zero",
+          points: 30,
+          image: "🎨",
+          status: "Disponível",
+        },
+        {
+          id: 3,
+          title: "Cinema no Parque",
+          description: "Sessões de cinema ao ar livre com filmes nacionais",
+          category: "Cinema",
+          date: "Quartas e Domingos",
+          location: "Parque 13 de Maio",
+          points: 25,
+          image: "🎬",
+          status: "Disponível",
+        },
+        {
+          id: 4,
+          title: "Aulas de Dança Popular",
+          description:
+            "Aulas gratuitas de frevo, maracatu e outros ritmos regionais",
+          category: "Dança",
+          date: "Terças e Quintas",
+          location: "Casa da Cultura",
+          points: 40,
+          image: "💃",
+          status: "Disponível",
+        },
+        {
+          id: 5,
+          title: "Biblioteca Móvel",
+          description:
+            "Empréstimo de livros e atividades de leitura nos bairros",
+          category: "Literatura",
+          date: "Segunda a Sábado",
+          location: "Vários bairros",
+          points: 20,
+          image: "📚",
+          status: "Disponível",
+        },
+        {
+          id: 6,
+          title: "Oficinas de Artesanato",
+          description:
+            "Aprenda técnicas tradicionais de artesanato pernambucano",
+          category: "Artesanato",
+          date: "Sábados",
+          location: "Mercado de São José",
+          points: 35,
+          image: "🖼️",
+          status: "Disponível",
+        },
+      ];
+
+      // Benefícios para Resgate
+      var availableBenefits = [
+        {
+          id: 1,
+          title: "Ingresso Museu da Cidade",
+          description: "Entrada gratuita para o Museu da Cidade do Recife",
+          points: 30,
+          image: "🏛️",
+          category: "Cultura",
+          validity: "30 dias",
+        },
+        {
+          id: 2,
+          title: "Desconto Teatro Santa Isabel",
+          description: "50% de desconto em peças do Teatro Santa Isabel",
+          points: 80,
+          image: "🎭",
+          category: "Teatro",
+          validity: "60 dias",
+        },
+        {
+          id: 3,
+          title: "Passeio de Catamaran",
+          description: "Passeio gratuito pelos rios do Recife",
+          points: 100,
+          image: "⛵",
+          category: "Turismo",
+          validity: "90 dias",
+        },
+        {
+          id: 4,
+          title: "Aula de Culinária Regional",
+          description: "Aprenda pratos típicos pernambucanos",
+          points: 60,
+          image: "👨‍🍳",
+          category: "Gastronomia",
+          validity: "45 dias",
+        },
+        {
+          id: 5,
+          title: "Kit Livros Regionais",
+          description: "Coleção de livros sobre a cultura pernambucana",
+          points: 45,
+          image: "📖",
+          category: "Literatura",
+          validity: "Permanente",
+        },
+        {
+          id: 6,
+          title: "Workshop de Fotografia",
+          description: "Workshop de fotografia urbana no Recife Antigo",
+          points: 70,
+          image: "📸",
+          category: "Arte",
+          validity: "30 dias",
+        },
+      ];
+
+      // Função para mudar seção ativa
+      function showSection(sectionId, buttonElement) {
+        // Esconder todas as seções
+        var sections = document.querySelectorAll(".content-section");
+        for (var i = 0; i < sections.length; i++) {
+          sections[i].classList.remove("active");
+        }
+
+        // Mostrar seção selecionada
+        document.getElementById(sectionId).classList.add("active");
+
+        // Atualizar botão ativo no sidebar
+        var buttons = document.querySelectorAll(".nav-button");
+        for (var i = 0; i < buttons.length; i++) {
+          buttons[i].classList.remove("active");
+        }
+
+        // Atualizar navegação rápida
+        updateQuickNavigation(sectionId);
+
+        // Se o botão clicado é do sidebar, ativá-lo
+        if (buttonElement && buttonElement.classList.contains("nav-button")) {
+          buttonElement.classList.add("active");
+        } else {
+          // Se foi clicado na navegação rápida, ativar o botão correspondente no sidebar
+          var sidebarButtons = {
+            dashboard: 0,
+            appointments: 1,
+            waiting: 2,
+            bonifications: 3,
+            analytics: 4,
+          };
+          var index = sidebarButtons[sectionId];
+          if (index !== undefined && buttons[index]) {
+            buttons[index].classList.add("active");
+          }
+        }
+
+        // Fechar menu mobile se estiver aberto
+        if (window.innerWidth <= 768) {
+          closeMobileMenu();
+        }
+
+        // Renderizar conteúdo específico
+        if (sectionId === "appointments") {
+          renderAppointments();
+        } else if (sectionId === "waiting") {
+          renderWaitingList();
+        } else if (sectionId === "bonifications") {
+          renderCulturalProjects();
+          renderBenefits();
+        }
+      }
+
+      // Função para atualizar navegação rápida visual
+      function updateQuickNavigation(activeSection) {
+        try {
+          var quickButtons = {
+            dashboard: { id: "quickDash", color: "#2563eb" },
+            appointments: { id: "quickAppts", color: "#059669" },
+            waiting: { id: "quickWait", color: "#d97706" },
+            bonifications: { id: "quickBonif", color: "#7c3aed" },
+            analytics: { id: "quickAnalyt", color: "#dc2626" },
+          };
+
+          // Resetar todos os botões para cinza
+          for (var section in quickButtons) {
+            var btn = document.getElementById(quickButtons[section].id);
+            if (btn) {
+              btn.style.background = "#6b7280";
+            }
+          }
+
+          // Ativar botão da seção atual
+          if (quickButtons[activeSection]) {
+            var activeBtn = document.getElementById(
+              quickButtons[activeSection].id
+            );
+            if (activeBtn) {
+              activeBtn.style.background = quickButtons[activeSection].color;
+            }
+          }
+        } catch (error) {
+          console.log("Erro na navegação rápida:", error);
+        }
+      }
+
+      // Função simples para voltar ao dashboard (versão de backup)
+      function voltarParaInicio() {
+        console.log("🏠 Função de voltar ativada!");
+
+        // Esconder todas as seções
+        var sections = document.querySelectorAll(".content-section");
+        for (var i = 0; i < sections.length; i++) {
+          sections[i].classList.remove("active");
+        }
+
+        // Mostrar dashboard
+        document.getElementById("dashboard").classList.add("active");
+
+        // Ativar primeiro botão da sidebar
+        var navButtons = document.querySelectorAll(".nav-button");
+        for (var i = 0; i < navButtons.length; i++) {
+          navButtons[i].classList.remove("active");
+        }
+        if (navButtons[0]) navButtons[0].classList.add("active");
+      }
+
+      // Funções para menu mobile
+      function toggleMobileMenu() {
+        var sidebar = document.getElementById("sidebar");
+        var overlay = document.getElementById("mobileOverlay");
+        var menuButton = document.getElementById("menuToggle");
+
+        if (sidebar.classList.contains("mobile-open")) {
+          closeMobileMenu();
+        } else {
+          openMobileMenu();
+        }
+      }
+
+      function openMobileMenu() {
+        var sidebar = document.getElementById("sidebar");
+        var overlay = document.getElementById("mobileOverlay");
+        var menuButton = document.getElementById("menuToggle");
+
+        sidebar.classList.add("mobile-open");
+        overlay.classList.add("active");
+        if (menuButton) menuButton.innerHTML = "✕";
+      }
+
+      function closeMobileMenu() {
+        var sidebar = document.getElementById("sidebar");
+        var overlay = document.getElementById("mobileOverlay");
+        var menuButton = document.getElementById("menuToggle");
+
+        sidebar.classList.remove("mobile-open");
+        overlay.classList.remove("active");
+        if (menuButton) menuButton.innerHTML = "☰";
+      }
+
+      // Função para voltar ao dashboard
+      function goToHome() {
+        console.log("Voltando para o Dashboard...");
+
+        // Esconder todas as seções
+        var sections = document.querySelectorAll(".content-section");
+        for (var i = 0; i < sections.length; i++) {
+          sections[i].classList.remove("active");
+        }
+
+        // Mostrar dashboard
+        var dashboard = document.getElementById("dashboard");
+        if (dashboard) {
+          dashboard.classList.add("active");
+        }
+
+        // Ativar botão do dashboard no sidebar
+        var buttons = document.querySelectorAll(".nav-button");
+        for (var i = 0; i < buttons.length; i++) {
+          buttons[i].classList.remove("active");
+        }
+        if (buttons.length > 0 && buttons[0]) {
+          buttons[0].classList.add("active");
+        }
+
+        // Atualizar navegação rápida
+        updateQuickNavigation("dashboard");
+
+        // Fechar menu se estiver aberto
+        closeMobileMenu();
+
+        // Feedback visual do botão
+        var backButton = document.getElementById("backButton");
+        if (backButton) {
+          backButton.style.background = "#10b981";
+          backButton.innerHTML = "✅";
+          setTimeout(function () {
+            backButton.style.background = "#059669";
+            backButton.innerHTML = "🏠";
+          }, 800);
+        }
+
+        // Alert de confirmação para debug
+        alert("✅ Voltou para o Dashboard!");
+      }
+
+      // Renderizar tabela de agendamentos
+      function renderAppointments() {
+        var tbody = document.getElementById("appointmentsBody");
+        tbody.innerHTML = "";
+
+        for (var i = 0; i < appointments.length; i++) {
+          var appointment = appointments[i];
+          var row = document.createElement("tr");
+
+          row.innerHTML =
+            "<td>" +
+            '<div style="font-weight: 500;">' +
+            appointment.patient +
+            "</div>" +
+            '<div style="font-size: 14px; color: #6b7280;">' +
+            appointment.phone +
+            "</div>" +
+            "</td>" +
+            "<td>" +
+            appointment.time +
+            "</td>" +
+            "<td>" +
+            appointment.specialty +
+            "</td>" +
+            "<td>" +
+            '<span class="badge ' +
+            getStatusBadgeClass(appointment.status) +
+            '">' +
+            getStatusText(appointment.status) +
+            "</span>" +
+            "</td>" +
+            "<td>" +
+            '<span class="badge ' +
+            getRiskBadgeClass(appointment.riskLevel) +
+            '">' +
+            getRiskText(appointment.riskLevel) +
+            "</span>" +
+            "</td>" +
+            "<td>" +
+            getActionButtons(appointment) +
+            "</td>";
+
+          tbody.appendChild(row);
+        }
+      }
+
+      // Renderizar lista de espera
+      function renderWaitingList() {
+        var container = document.getElementById("waitingListContainer");
+
+        if (waitingList.length === 0) {
+          container.innerHTML =
+            '<div class="empty-state">' +
+            '<div style="font-size: 48px; margin-bottom: 16px;">👥</div>' +
+            "<p>Nenhum paciente na lista de espera no momento</p>" +
+            "</div>";
+          return;
+        }
+
+        container.innerHTML = "";
+        for (var i = 0; i < waitingList.length; i++) {
+          var patient = waitingList[i];
+          var item = document.createElement("div");
+          item.className = "waiting-item";
+          item.innerHTML =
+            '<div class="patient-info">' +
+            "<h4>" +
+            patient.patient +
+            "</h4>" +
+            '<div class="phone">' +
+            patient.phone +
+            "</div>" +
+            '<div class="specialty">' +
+            patient.specialty +
+            "</div>" +
+            "</div>" +
+            '<button class="btn btn-sm" onclick="notifyWaitingPatient(' +
+            patient.id +
+            ')">' +
+            "📱 Notificar Vaga" +
+            "</button>" +
+            '<button class="btn btn-sm btn-orange" onclick="removeFromWaitingList(' +
+            patient.id +
+            ')" style="margin-left: 8px;">' +
+            "🗑️ Remover" +
+            "</button>";
+          container.appendChild(item);
+        }
+      }
+
+      // Funções auxiliares
+      function getStatusBadgeClass(status) {
+        switch (status) {
+          case "confirmed":
+            return "badge-green";
+          case "not_confirmed":
+            return "badge-red";
+          case "confirmation_sent":
+            return "badge-blue";
+          default:
+            return "badge-yellow";
+        }
+      }
+
+      function getRiskBadgeClass(risk) {
+        switch (risk) {
+          case "high":
+            return "badge-red";
+          case "medium":
+            return "badge-yellow";
+          default:
+            return "badge-green";
+        }
+      }
+
+      function getStatusText(status) {
+        switch (status) {
+          case "confirmed":
+            return "Confirmado";
+          case "not_confirmed":
+            return "Não Confirmado";
+          case "confirmation_sent":
+            return "Confirmação Enviada";
+          default:
+            return "Pendente";
+        }
+      }
+
+      function getRiskText(risk) {
+        switch (risk) {
+          case "high":
+            return "Alto";
+          case "medium":
+            return "Médio";
+          default:
+            return "Baixo";
+        }
+      }
+
+      function getActionButtons(appointment) {
+        if (appointment.status === "pending") {
+          return (
+            '<div class="action-buttons">' +
+            '<button class="btn btn-sm btn-green" onclick="sendConfirmation(' +
+            appointment.id +
+            ', \'whatsapp\')" title="Enviar via WhatsApp">' +
+            "📱 WhatsApp" +
+            "</button>" +
+            '<button class="btn btn-sm" onclick="sendConfirmation(' +
+            appointment.id +
+            ', \'sms\')" title="Enviar via SMS">' +
+            "💬 SMS" +
+            "</button>" +
+            "</div>"
+          );
+        } else if (appointment.status === "not_confirmed") {
+          return (
+            '<button class="btn btn-sm btn-orange" onclick="offerToWaitingList(' +
+            appointment.id +
+            ')">' +
+            "🔄 Oferecer para Lista" +
+            "</button>"
+          );
+        }
+        return '<span style="color: #6b7280;">Confirmado ✅</span>';
+      }
+
+      // Ações dos botões
+      function sendConfirmation(appointmentId, method) {
+        var appointment = null;
+        for (var i = 0; i < appointments.length; i++) {
+          if (appointments[i].id === appointmentId) {
+            appointment = appointments[i];
+            break;
+          }
+        }
+
+        if (!appointment) return;
+
+        appointment.status = "confirmation_sent";
+        renderAppointments();
+
+        alert(
+          "📱 Confirmação enviada via " +
+            (method === "whatsapp" ? "WhatsApp" : "SMS") +
+            " para " +
+            appointment.patient
+        );
+
+        // Simular resposta após 2 segundos
+        setTimeout(function () {
+          appointment.status =
+            Math.random() > 0.3 ? "confirmed" : "not_confirmed";
+          renderAppointments();
+          updateDashboardStats();
+
+          if (appointment.status === "confirmed") {
+            alert(
+              "✅ " +
+                appointment.patient +
+                " confirmou a consulta!\n\n" +
+                "🎁 BONIFICAÇÃO CONFIRMAÍ:\n" +
+                "⭐ +10 pontos pela confirmação\n" +
+                "🎪 Paciente pode resgatar benefícios culturais!\n" +
+                "📱 Envie o link dos projetos da Prefeitura"
+            );
+          } else {
+            alert(
+              "❌ " +
+                appointment.patient +
+                " não confirmou. Vaga disponível para lista de espera."
+            );
+          }
+        }, 2000);
+      }
+
+      function offerToWaitingList(appointmentId) {
+        var appointment = null;
+        for (var i = 0; i < appointments.length; i++) {
+          if (appointments[i].id === appointmentId) {
+            appointment = appointments[i];
+            break;
+          }
+        }
+
+        var waitingPatient = null;
+        for (var i = 0; i < waitingList.length; i++) {
+          if (waitingList[i].specialty === appointment.specialty) {
+            waitingPatient = waitingList[i];
+            break;
+          }
+        }
+
+        if (waitingPatient) {
+          appointment.patient = waitingPatient.patient;
+          appointment.phone = waitingPatient.phone;
+          appointment.status = "confirmed";
+          appointment.riskLevel = "low";
+
+          // Remover da lista de espera
+          for (var i = 0; i < waitingList.length; i++) {
+            if (waitingList[i].id === waitingPatient.id) {
+              waitingList.splice(i, 1);
+              break;
+            }
+          }
+
+          renderAppointments();
+          renderWaitingList();
+          updateDashboardStats();
+          alert(
+            "✅ Vaga oferecida para " +
+              waitingPatient.patient +
+              " da lista de espera!"
+          );
+        } else {
+          alert(
+            "❌ Nenhum paciente na lista de espera para esta especialidade."
+          );
+        }
+      }
+
+      function notifyWaitingPatient(patientId) {
+        var patient = null;
+        for (var i = 0; i < waitingList.length; i++) {
+          if (waitingList[i].id === patientId) {
+            patient = waitingList[i];
+            break;
+          }
+        }
+
+        if (patient) {
+          alert(
+            "📱 Notificação enviada para " +
+              patient.patient +
+              " sobre vaga disponível!"
+          );
+        }
+      }
+
+      // Funções para lista de espera
+      function openNewWaitingForm() {
+        document.getElementById("newWaitingForm").style.display = "block";
+        // Limpar campos
+        document.getElementById("newWaitingName").value = "";
+        document.getElementById("newWaitingPhone").value = "";
+        document.getElementById("newWaitingSpecialty").value = "Cardiologia";
+      }
+
+      function closeNewWaitingForm() {
+        document.getElementById("newWaitingForm").style.display = "none";
+      }
+
+      function saveNewWaitingPatient() {
+        var name = document.getElementById("newWaitingName").value;
+        var phone = document.getElementById("newWaitingPhone").value;
+        var specialty = document.getElementById("newWaitingSpecialty").value;
+
+        // Validar campos obrigatórios
+        if (!name || !phone) {
+          alert(
+            "❌ Por favor, preencha todos os campos obrigatórios (Nome e Telefone)."
+          );
+          return;
+        }
+
+        // Formatar telefone se necessário
+        if (phone && !phone.includes("(")) {
+          phone =
+            "(" +
+            phone.substring(0, 2) +
+            ") " +
+            phone.substring(2, 7) +
+            "-" +
+            phone.substring(7);
+        }
+
+        // Gerar novo ID
+        var newId =
+          waitingList.length > 0
+            ? Math.max.apply(
+                Math,
+                waitingList.map(function (patient) {
+                  return patient.id;
+                })
+              ) + 1
+            : 1;
+
+        // Criar novo paciente na lista de espera
+        var newWaitingPatient = {
+          id: newId,
+          patient: name,
+          phone: phone,
+          specialty: specialty,
+        };
+
+        // Adicionar à lista
+        waitingList.push(newWaitingPatient);
+
+        // Fechar formulário e atualizar lista
+        closeNewWaitingForm();
+        renderWaitingList();
+
+        alert(
+          "✅ " +
+            name +
+            " foi adicionado à lista de espera para " +
+            specialty +
+            "!\n🔔 Será notificado quando houver vaga disponível."
+        );
+      }
+
+      // Funções para novo agendamento
+      function openNewAppointmentForm() {
+        document.getElementById("newAppointmentForm").style.display = "block";
+        // Limpar campos
+        document.getElementById("newPatientName").value = "";
+        document.getElementById("newPatientPhone").value = "";
+        document.getElementById("newAppointmentTime").value = "";
+        document.getElementById("newAppointmentSpecialty").value =
+          "Cardiologia";
+        document.getElementById("newAppointmentRisk").value = "low";
+      }
+
+      function closeNewAppointmentForm() {
+        document.getElementById("newAppointmentForm").style.display = "none";
+      }
+
+      function saveNewAppointment() {
+        var name = document.getElementById("newPatientName").value;
+        var phone = document.getElementById("newPatientPhone").value;
+        var time = document.getElementById("newAppointmentTime").value;
+        var specialty = document.getElementById(
+          "newAppointmentSpecialty"
+        ).value;
+        var risk = document.getElementById("newAppointmentRisk").value;
+
+        // Validar campos obrigatórios
+        if (!name || !phone || !time) {
+          alert(
+            "❌ Por favor, preencha todos os campos obrigatórios (Nome, Telefone e Horário)."
+          );
+          return;
+        }
+
+        // Formatar telefone se necessário
+        if (phone && !phone.includes("(")) {
+          phone =
+            "(" +
+            phone.substring(0, 2) +
+            ") " +
+            phone.substring(2, 7) +
+            "-" +
+            phone.substring(7);
+        }
+
+        // Gerar novo ID
+        var newId =
+          Math.max.apply(
+            Math,
+            appointments.map(function (apt) {
+              return apt.id;
+            })
+          ) + 1;
+
+        // Criar novo agendamento
+        var newAppointment = {
+          id: newId,
+          patient: name,
+          phone: phone,
+          time: time,
+          status: "pending",
+          riskLevel: risk,
+          specialty: specialty,
+        };
+
+        // Adicionar à lista
+        appointments.push(newAppointment);
+
+        // Fechar formulário e atualizar tabela
+        closeNewAppointmentForm();
+        renderAppointments();
+        updateDashboardStats();
+
+        alert(
+          "✅ Agendamento criado com sucesso para " +
+            name +
+            " às " +
+            time +
+            "!\n\n" +
+            "📱 Confirmação será enviada automaticamente\n" +
+            "🎁 Paciente pode ganhar pontos e resgatar benefícios culturais!\n" +
+            "🏛️ Parceria com Prefeitura do Recife ativa"
+        );
+      }
+
+      function removeFromWaitingList(patientId) {
+        var patient = null;
+        for (var i = 0; i < waitingList.length; i++) {
+          if (waitingList[i].id === patientId) {
+            patient = waitingList[i];
+            break;
+          }
+        }
+
+        if (
+          patient &&
+          confirm(
+            "❓ Tem certeza que deseja remover " +
+              patient.patient +
+              " da lista de espera?"
+          )
+        ) {
+          // Remover da lista
+          for (var i = 0; i < waitingList.length; i++) {
+            if (waitingList[i].id === patientId) {
+              waitingList.splice(i, 1);
+              break;
+            }
+          }
+
+          renderWaitingList();
+          alert("✅ " + patient.patient + " foi removido da lista de espera.");
+        }
+      }
+
+      // Renderizar projetos culturais
+      function renderCulturalProjects() {
+        var container = document.getElementById("culturalProjectsContainer");
+        container.innerHTML = "";
+
+        for (var i = 0; i < culturalProjects.length; i++) {
+          var project = culturalProjects[i];
+          var projectCard = document.createElement("div");
+          projectCard.style.cssText =
+            "background: white; border-radius: 12px; padding: 20px; border: 1px solid #e5e7eb; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer;";
+          projectCard.onmouseover = function () {
+            this.style.transform = "translateY(-4px)";
+            this.style.boxShadow = "0 10px 25px rgba(0,0,0,0.1)";
+          };
+          projectCard.onmouseout = function () {
+            this.style.transform = "translateY(0)";
+            this.style.boxShadow = "none";
+          };
+
+          projectCard.innerHTML =
+            '<div style="display: flex; align-items: center; margin-bottom: 12px;">' +
+            '<div style="font-size: 32px; margin-right: 12px;">' +
+            project.image +
+            "</div>" +
+            "<div>" +
+            '<h4 style="font-weight: 600; margin-bottom: 4px; color: #1f2937;">' +
+            project.title +
+            "</h4>" +
+            '<span style="background: #dbeafe; color: #1e40af; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 500;">' +
+            project.category +
+            "</span>" +
+            "</div>" +
+            "</div>" +
+            '<p style="color: #6b7280; font-size: 14px; margin-bottom: 12px; line-height: 1.5;">' +
+            project.description +
+            "</p>" +
+            '<div style="margin-bottom: 12px;">' +
+            '<div style="display: flex; align-items: center; margin-bottom: 4px;">' +
+            '<span style="font-size: 14px; margin-right: 8px;">📅</span>' +
+            '<span style="font-size: 14px; color: #374151;">' +
+            project.date +
+            "</span>" +
+            "</div>" +
+            '<div style="display: flex; align-items: center;">' +
+            '<span style="font-size: 14px; margin-right: 8px;">📍</span>' +
+            '<span style="font-size: 14px; color: #374151;">' +
+            project.location +
+            "</span>" +
+            "</div>" +
+            "</div>" +
+            '<div style="display: flex; justify-content: space-between; align-items: center;">' +
+            '<div style="display: flex; align-items: center;">' +
+            '<span style="font-size: 16px; margin-right: 4px;">⭐</span>' +
+            '<span style="font-weight: 600; color: #f59e0b;">' +
+            project.points +
+            " pontos</span>" +
+            "</div>" +
+            '<button class="btn btn-sm" onclick="shareProject(' +
+            project.id +
+            ')" style="background: #10b981;">' +
+            "📤 Compartilhar" +
+            "</button>" +
+            "</div>";
+
+          container.appendChild(projectCard);
+        }
+      }
+
+      // Renderizar benefícios
+      function renderBenefits() {
+        var container = document.getElementById("benefitsContainer");
+        container.innerHTML = "";
+
+        for (var i = 0; i < availableBenefits.length; i++) {
+          var benefit = availableBenefits[i];
+          var benefitCard = document.createElement("div");
+          benefitCard.style.cssText =
+            "background: linear-gradient(135deg, #fef7ff 0%, #f3e8ff 100%); border-radius: 12px; padding: 20px; border: 2px solid #e879f9; transition: transform 0.2s;";
+          benefitCard.onmouseover = function () {
+            this.style.transform = "scale(1.02)";
+          };
+          benefitCard.onmouseout = function () {
+            this.style.transform = "scale(1)";
+          };
+
+          benefitCard.innerHTML =
+            '<div style="text-align: center; margin-bottom: 16px;">' +
+            '<div style="font-size: 48px; margin-bottom: 8px;">' +
+            benefit.image +
+            "</div>" +
+            '<h4 style="font-weight: 600; margin-bottom: 8px; color: #581c87;">' +
+            benefit.title +
+            "</h4>" +
+            '<span style="background: #a855f7; color: white; padding: 4px 12px; border-radius: 16px; font-size: 12px; font-weight: 500;">' +
+            benefit.category +
+            "</span>" +
+            "</div>" +
+            '<p style="color: #6b46c1; font-size: 14px; margin-bottom: 16px; text-align: center; line-height: 1.4;">' +
+            benefit.description +
+            "</p>" +
+            '<div style="margin-bottom: 16px; text-align: center;">' +
+            '<div style="background: white; padding: 8px 16px; border-radius: 8px; margin-bottom: 8px;">' +
+            '<span style="font-weight: 600; color: #f59e0b; font-size: 18px;">⭐ ' +
+            benefit.points +
+            " pontos</span>" +
+            "</div>" +
+            '<div style="font-size: 12px; color: #7c3aed;">' +
+            "⏰ Válido por: " +
+            benefit.validity +
+            "</div>" +
+            "</div>" +
+            '<button class="btn btn-sm" onclick="redeemBenefit(' +
+            benefit.id +
+            ')" style="width: 100%; background: #a855f7; border: none;">' +
+            "🎁 Resgatar Benefício" +
+            "</button>";
+
+          container.appendChild(benefitCard);
+        }
+      }
+
+      // Funções de interação para bonificações
+      function shareProject(projectId) {
+        var project = null;
+        for (var i = 0; i < culturalProjects.length; i++) {
+          if (culturalProjects[i].id === projectId) {
+            project = culturalProjects[i];
+            break;
+          }
+        }
+
+        if (project) {
+          alert(
+            '📤 Link do projeto "' +
+              project.title +
+              '" copiado!\n\n' +
+              "🔗 Compartilhe com seus pacientes via WhatsApp:\n" +
+              '"Olá! A clínica tem uma parceria incrível com a Prefeitura do Recife. ' +
+              "Confira este projeto cultural: " +
+              project.title +
+              " - " +
+              project.description +
+              '"'
+          );
+        }
+      }
+
+      function redeemBenefit(benefitId) {
+        var benefit = null;
+        for (var i = 0; i < availableBenefits.length; i++) {
+          if (availableBenefits[i].id === benefitId) {
+            benefit = availableBenefits[i];
+            break;
+          }
+        }
+
+        if (benefit) {
+          alert(
+            '🎁 Benefício "' +
+              benefit.title +
+              '" disponível para resgate!\n\n' +
+              "💰 Custo: " +
+              benefit.points +
+              " pontos\n" +
+              "⏰ Validade: " +
+              benefit.validity +
+              "\n\n" +
+              "📱 Envie este código para o paciente via WhatsApp:\n" +
+              "VivaMais-" +
+              benefitId +
+              "-" +
+              Math.floor(Math.random() * 10000)
+          );
+        }
+      }
+
+      function showPointsDetails() {
+        alert(
+          "⭐ SISTEMA DE PONTOS VIVAMAIS\n\n" +
+            "📊 COMO FUNCIONA:\n" +
+            "• Cada confirmação = +10 pontos\n" +
+            "• Pontualidade = +5 pontos\n" +
+            "• Consulta realizada = +15 pontos\n" +
+            "• Indicação = +25 pontos\n\n" +
+            "🎁 OS PACIENTES PODEM RESGATAR:\n" +
+            "• Ingressos para museus\n" +
+            "• Descontos em teatros\n" +
+            "• Passeios culturais\n" +
+            "• Workshops e oficinas\n\n" +
+            "📈 RESULTADO: +34% na taxa de confirmação!"
+        );
+      }
+
+      function refreshCulturalProjects() {
+        renderCulturalProjects();
+        alert(
+          "🔄 Projetos culturais atualizados!\n\n" +
+            "📅 Novos eventos adicionados da Prefeitura do Recife\n" +
+            "🎨 " +
+            culturalProjects.length +
+            " projetos culturais disponíveis\n" +
+            "🤝 Parceria ativa com Secretaria de Cultura"
+        );
+      }
+
+      function openBenefitsManager() {
+        alert(
+          "⚙️ GERENCIADOR DE BENEFÍCIOS\n\n" +
+            "📊 ESTATÍSTICAS:\n" +
+            "• " +
+            availableBenefits.length +
+            " benefícios ativos\n" +
+            "• 89 resgates este mês\n" +
+            "• 156 pacientes engajados\n\n" +
+            "🔧 AÇÕES DISPONÍVEIS:\n" +
+            "• Adicionar novos benefícios\n" +
+            "• Alterar pontuação necessária\n" +
+            "• Configurar parcerias\n" +
+            "• Relatório de engajamento"
+        );
+      }
+
+      // Função para atualizar estatísticas do dashboard
+      function updateDashboardStats() {
+        var totalAppointments = appointments.length;
+        var confirmedCount = 0;
+        var pendingCount = 0;
+
+        for (var i = 0; i < appointments.length; i++) {
+          if (appointments[i].status === "confirmed") {
+            confirmedCount++;
+          } else if (appointments[i].status === "pending") {
+            pendingCount++;
+          }
+        }
+
+        var confirmationRate =
+          totalAppointments > 0
+            ? Math.round((confirmedCount / totalAppointments) * 100)
+            : 0;
+
+        // Atualizar no DOM se estivermos na seção dashboard
+        var totalElement = document.querySelector(".stat-value");
+        if (totalElement) {
+          totalElement.textContent = totalAppointments;
+        }
+      }
+
+      // Inicializar quando a página carregar
+      document.addEventListener("DOMContentLoaded", function () {
+        renderAppointments();
+        renderWaitingList();
+        renderCulturalProjects();
+        renderBenefits();
+        updateDashboardStats();
+
+        // Verificar se botões existem
+        var menuBtn = document.getElementById("menuToggle");
+        var backBtn = document.getElementById("backButton");
+
+        console.log("Menu button:", menuBtn);
+        console.log("Back button:", backBtn);
+
+        // Inicializar navegação rápida
+        updateQuickNavigation("dashboard");
+
+        // Mostrar instrução mobile se necessário
+        if (window.innerWidth <= 768) {
+          var instruction = document.getElementById("mobileInstruction");
+          var quickNav = document.getElementById("mobileQuickNav");
+
+          if (instruction) {
+            instruction.style.display = "block";
+            // Esconder após 6 segundos
+            setTimeout(function () {
+              instruction.style.display = "none";
+            }, 6000);
+          }
+
+          if (quickNav) {
+            quickNav.style.display = "block";
+          }
+
+          // Adicionar event listener adicional ao botão de voltar
+          if (backBtn) {
+            backBtn.addEventListener("click", function () {
+              console.log("Botão de voltar clicado!");
+              voltarParaInicio();
+            });
+          }
+        }
+
+        // Fechar menu mobile quando redimensionar tela
+        window.addEventListener("resize", function () {
+          if (window.innerWidth > 768) {
+            closeMobileMenu();
+            var instruction = document.getElementById("mobileInstruction");
+            var quickNav = document.getElementById("mobileQuickNav");
+            if (instruction) instruction.style.display = "none";
+            if (quickNav) quickNav.style.display = "none";
+          } else {
+            var instruction = document.getElementById("mobileInstruction");
+            var quickNav = document.getElementById("mobileQuickNav");
+            if (instruction) instruction.style.display = "block";
+            if (quickNav) quickNav.style.display = "block";
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
